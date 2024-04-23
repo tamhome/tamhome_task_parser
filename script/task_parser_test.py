@@ -7,6 +7,7 @@ import copy
 import openai
 from tamlib.utils import Logger
 
+
 class TaskParser(Logger):
     def __init__(self) -> None:
         Logger.__init__(self)
@@ -22,7 +23,7 @@ class TaskParser(Logger):
 
         self.orig_handyman_prompt = [
             {"role": "system", "content": "あなたは家庭内で動作するホームサービスロボットで，オペレータの指示をもとに行動する必要があります．"},
-            {"role": "system", "content": "指示分から，次に求められているローレベルの動作を推定してください．"},
+            {"role": "system", "content": "指示文から，次に求められているローレベルの動作を推定してください．"},
             {"role": "system", "content": "あなたが実行可能な動作は，部屋や人の元へ移動する[move]，物体を見つける[find]，物体を把持する[grasp]，人に渡すための[deliver]，どこかにおく[put]です．"},
             {"role": "system", "content": "物体を把持する[grasp]の直前には必ず，物体を見つける[find]が必要です．"},
             {"role": "system", "content": "[find][deliver]の直前は必ず[move]が必要です．"},
@@ -82,7 +83,7 @@ class TaskParser(Logger):
 
         return commands
 
-    def execute(self):
+    def run(self):
         while True:
             text = input("instruction command >> ")
             trial = 0
@@ -105,4 +106,4 @@ class TaskParser(Logger):
 
 if __name__ == "__main__":
     cls = TaskParser()
-    cls.execute()
+    cls.run()
