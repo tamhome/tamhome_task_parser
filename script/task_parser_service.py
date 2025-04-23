@@ -10,6 +10,8 @@ from tamlib.utils import Logger
 from include.prompt_templates import PromptTemplates
 
 from tamhome_task_parser.srv import ParseTask, ParseTaskResponse, ParseTaskRequest
+from tamhome_task_parser.srv import AddPrompt, AddPromptResponse, AddPromptRequest
+
 from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
 
 
@@ -36,6 +38,7 @@ class TaskParserService(Logger, PromptTemplates):
         # ros interface
         rospy.Service("/tamhome/task_parser/service", ParseTask, self.run)
         rospy.Service("/tamhome/task_parser/reset_prompt", Empty, self.cb_reset_prompt)
+        rospy.Service("/tamhome/task_parser/add_prompt", AddPrompt, self.cb_add_prompt)
         self.logsuccess("Task parser service is ready!")
 
     def extract_commands(self, s: str):
@@ -57,6 +60,22 @@ class TaskParserService(Logger, PromptTemplates):
         self.trial = 0
         self.previous_skills = "[start]"
         self.hsrb_location = "instruction_point"
+
+    def cb_add_prompt(self, req: AddPromptRequest) -> AddPromptResponse:
+        """プロンプトを追加するサービス
+        Args:
+            req(AddPromptRequest): プロンプトの追加サービスリクエスト
+        """
+
+        res = AddPromptResponse()
+        role = req.role
+        if role == "":
+            role = "system"
+
+        self.handyman_prompt.append({"role": f"{role}", "content": f"{req.prompt}"})
+
+        res.success = True
+        return res
 
     def cb_reset_prompt(self, req: EmptyRequest) -> EmptyResponse:
         self.reset_prompt()

@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
    FILES
    ParseTask.srv
+   AddPrompt.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
